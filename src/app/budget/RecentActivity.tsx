@@ -1,6 +1,5 @@
 "use client";
 import { TrendingDown, TrendingUp } from "lucide-react";
-import { useState } from "react";
 
 export const RecentActivity = () => {
   // todo: replace with real data and remember to show only 1 day activity

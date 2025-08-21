@@ -4,6 +4,7 @@ import { QuickActions } from "./quickActions";
 import { SpendingChart } from "./spendingChart";
 import { WeeklySpending } from "./weeklySpending";
 import { RecentActivity } from "./RecentActivity";
+import { NavigationHint } from "./navigationHint";
 
 const page = () => {
   return (
@@ -14,6 +15,7 @@ const page = () => {
       <SpendingChart />
       <WeeklySpending />
       <RecentActivity />
+      <NavigationHint />
     </div>
   );
 };
