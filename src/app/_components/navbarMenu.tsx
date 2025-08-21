@@ -16,9 +16,7 @@ import {
   AppWindow,
   LogOut,
   LogIn,
-  LogInIcon,
   PieChart,
-  ArrowRight,
   TrendingUp,
   Plus,
 } from "lucide-react";
@@ -100,15 +98,12 @@ export const NavbarMenu = ({ session }: { session: Session | null }) => {
                     <Menu />
                   </MenubarTrigger>
                   <MenubarContent>
-                    <MenubarItem>
-                      <LogIn className="mr-2 h-5 w-5" />
-                      <Link
-                        href="/api/auth/signin"
-                        className="hover:text-white"
-                      >
+                    <Link href="/api/auth/signin" className="hover:text-white">
+                      <MenubarItem>
+                        <LogIn className="mr-2 h-5 w-5" />
                         Log In
-                      </Link>
-                    </MenubarItem>
+                      </MenubarItem>
+                    </Link>
                   </MenubarContent>
                 </MenubarMenu>
               </Menubar>
@@ -121,55 +116,55 @@ export const NavbarMenu = ({ session }: { session: Session | null }) => {
                     <Menu />
                   </MenubarTrigger>
                   <MenubarContent>
-                    <MenubarItem>
-                      <LogOut className="mr-2 h-5 w-5" />
-                      <Link
-                        href="/api/auth/signout"
-                        className="text-gray-800 hover:text-black"
-                      >
+                    <Link
+                      href="/api/auth/signout"
+                      className="text-gray-800 hover:text-black"
+                    >
+                      <MenubarItem>
+                        <LogOut className="mr-2 h-5 w-5" />
                         Sign Out
-                      </Link>
-                    </MenubarItem>
+                      </MenubarItem>
+                    </Link>
                     <MenubarSeparator />
-                    <MenubarItem>
-                      <AppWindow className="mr-2 h-5 w-5" />
-                      <Link
-                        href="/budget"
-                        className="font-bold text-gray-800 hover:text-black"
-                      >
+                    <Link
+                      href="/budget"
+                      className="font-bold text-gray-800 hover:text-black"
+                    >
+                      <MenubarItem>
+                        <AppWindow className="mr-2 h-5 w-5" />
                         Dashboard
-                      </Link>
-                    </MenubarItem>
-                    <MenubarItem>
-                      <Plus className="mr-2 h-5 w-5" />
-                      {/* todo: AddExpense route */}
-                      <Link
-                        href="/budget"
-                        className="font-bold text-gray-800 hover:text-black"
-                      >
+                      </MenubarItem>
+                    </Link>
+                    <Link
+                      href="/AddItem"
+                      className="font-bold text-gray-800 hover:text-black"
+                    >
+                      <MenubarItem>
+                        <Plus className="mr-2 h-5 w-5" />
+                        {/* todo: AddExpense route */}
                         Add Expense
-                      </Link>
-                    </MenubarItem>
-                    <MenubarItem>
-                      <TrendingUp className="mr-2 h-5 w-5" />
-                      {/* todo: AddIncome route */}
-                      <Link
-                        href="/budget"
-                        className="font-bold text-gray-800 hover:text-black"
-                      >
+                      </MenubarItem>
+                    </Link>
+                    <Link
+                      href="/AddItem"
+                      className="font-bold text-gray-800 hover:text-black"
+                    >
+                      <MenubarItem>
+                        <TrendingUp className="mr-2 h-5 w-5" />
+                        {/* todo: AddIncome route */}
                         Add Income
-                      </Link>
-                    </MenubarItem>
-                    <MenubarItem>
-                      <PieChart className="mr-2 h-5 w-5" />
-                      {/* todo: viewReport route */}
-                      <Link
-                        href="/budget"
-                        className="font-bold text-gray-800 hover:text-black"
-                      >
+                      </MenubarItem>
+                    </Link>
+                    <Link
+                      href="/Reports"
+                      className="font-bold text-gray-800 hover:text-black"
+                    >
+                      <MenubarItem>
+                        <PieChart className="mr-2 h-5 w-5" />
+                        {/* todo: viewReport route */}
                         view Reports
-                      </Link>
-                    </MenubarItem>
+                      </MenubarItem>
+                    </Link>
                   </MenubarContent>
                 </MenubarMenu>
               </Menubar>

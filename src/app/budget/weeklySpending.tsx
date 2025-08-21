@@ -38,7 +38,7 @@ export const WeeklySpending = () => {
           >
             <XAxis dataKey="day" axisLine={false} tickLine={false} />
             <YAxis hide />
-            <Tooltip formatter={(value) => [`${value}`, "Spent"]} />
+            <Tooltip formatter={(value) => [String(value), "Spent"]} />
             <Bar dataKey="amount" fill="#3B82F6" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>

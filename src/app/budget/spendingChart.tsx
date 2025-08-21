@@ -36,7 +36,9 @@ export const SpendingChart = () => {
                 <Cell key={`cell-${index}`} fill={entry.color} />
               ))}
             </Pie>
-            <Tooltip formatter={(value, name) => [`${value}`, `${name}`]} />
+            <Tooltip
+              formatter={(value, name) => [String(value), String(name)]}
+            />
           </RechartsPieChart>
         </ResponsiveContainer>
       </div>

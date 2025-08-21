@@ -1,8 +1,8 @@
-import Link from "next/link";
-
-import { LatestPost } from "@/app/_components/post";
 import { auth } from "@/server/auth";
 import { api, HydrateClient } from "@/trpc/server";
+import { HeroContent } from "./HeroContent";
+import { FeatureSection } from "./featureSection";
+import { CTASection } from "./ctaSection";
 
 export default async function Home() {
   const session = await auth();
@@ -13,7 +13,9 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <div></div>
+      <HeroContent />
+      <FeatureSection />
+      <CTASection />
     </HydrateClient>
   );
 }
