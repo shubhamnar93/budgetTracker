@@ -2,6 +2,7 @@ import { QuickStats } from "./quickStats";
 import { TotalBalance } from "./totalBalanceCard";
 import { QuickActions } from "./quickActions";
 import { SpendingChart } from "./spendingChart";
+import { WeeklySpending } from "./weeklySpending";
 
 const page = () => {
   return (
@@ -10,6 +11,7 @@ const page = () => {
       <QuickStats />
       <QuickActions />
       <SpendingChart />
+      <WeeklySpending />
     </div>
   );
 };
