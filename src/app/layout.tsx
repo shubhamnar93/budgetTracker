@@ -4,7 +4,7 @@ import { type Metadata } from "next";
 import { Geist } from "next/font/google";
 
 import { TRPCReactProvider } from "@/trpc/react";
-import { Navbar } from "./navbar";
+import { Navbar } from "./_components/navbar";
 
 export const metadata: Metadata = {
   title: "Budget Tracker",
