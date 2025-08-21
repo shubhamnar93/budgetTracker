@@ -1,6 +1,7 @@
 import { QuickStats } from "./quickStats";
 import { TotalBalance } from "./totalBalanceCard";
 import { QuickActions } from "./quickActions";
+import { SpendingChart } from "./spendingChart";
 
 const page = () => {
   return (
@@ -8,6 +9,7 @@ const page = () => {
       <TotalBalance />
       <QuickStats />
       <QuickActions />
+      <SpendingChart />
     </div>
   );
 };
