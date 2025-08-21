@@ -130,7 +130,7 @@ const AddItem = () => {
     { id: "bank", name: "Bank Transfer", icon: Building },
   ];
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle form submission here
     console.log({
@@ -407,7 +407,7 @@ const AddItem = () => {
                 Cancel
               </button>
               <button
-                onClick={handleSubmit}
+                type="submit"
                 className="flex w-full items-center justify-center rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
               >
                 <Check className="mr-2 h-4 w-4" />
