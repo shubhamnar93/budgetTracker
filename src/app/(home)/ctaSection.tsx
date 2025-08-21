@@ -7,9 +7,9 @@ export const CTASection = () => {
           Ready to transform your finances?
         </h2>
         <p className="mb-10 text-xl text-blue-100">
-          Join us and take control of your finance future. Whether you're
-          looking to budget better, save more, or invest wisely, we've got you
-          covered.
+          Join us and take control of your finance future. Whether you&apos;re
+          looking to budget better, save more, or invest wisely, we&apos;ve got
+          you covered.
         </p>
 
         <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">

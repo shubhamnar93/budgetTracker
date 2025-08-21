@@ -28,9 +28,6 @@ const AddItem = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [paymentMethod, setPaymentMethod] = useState("card");
-  const [notes, setNotes] = useState("");
-  const [location, setLocation] = useState("");
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringFrequency, setRecurringFrequency] = useState("monthly");
 
@@ -139,8 +136,6 @@ const AddItem = () => {
       description,
       category,
       date,
-      paymentMethod,
-      notes,
       location,
       isRecurring,
       recurringFrequency,
