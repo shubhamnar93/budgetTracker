@@ -1,5 +1,5 @@
 import { auth } from "@/server/auth";
-import { api, HydrateClient } from "@/trpc/server";
+import { HydrateClient } from "@/trpc/server";
 import { HeroContent } from "./HeroContent";
 import { FeatureSection } from "./featureSection";
 import { CTASection } from "./ctaSection";
@@ -7,12 +7,14 @@ import { CTASection } from "./ctaSection";
 export default async function Home() {
   const session = await auth();
 
-  if (session?.user)
-    return (
-      <HydrateClient>
-        <HeroContent />
-        <FeatureSection />
-        <CTASection />
-      </HydrateClient>
-    );
+  if (session?.user) {
+    window.location.href = "/budget";
+  }
+  return (
+    <HydrateClient>
+      <HeroContent />
+      <FeatureSection />
+      <CTASection />
+    </HydrateClient>
+  );
 }
