@@ -10,7 +10,9 @@ export const QuickActions = () => {
       <div className="space-y-3">
         <button
           className="group flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-blue-50 to-blue-100 p-4 transition-all duration-200 hover:from-blue-100 hover:to-blue-200"
-          onClick={() => (window.location.href = "/AddItem")}
+          onClick={() => {
+            window.location.href = "/AddItem?type=expense";
+          }}
         >
           <div className="flex items-center">
             <div className="mr-3 rounded-lg bg-blue-600 p-2">
@@ -23,7 +25,9 @@ export const QuickActions = () => {
 
         <button
           className="group flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-green-50 to-green-100 p-4 transition-all duration-200 hover:from-green-100 hover:to-green-200"
-          onClick={() => (window.location.href = "/AddItem")}
+          onClick={() => {
+            window.location.href = "/AddItem?type=income";
+          }}
         >
           <div className="flex items-center">
             <div className="mr-3 rounded-lg bg-green-600 p-2">

@@ -6,10 +6,10 @@ import { api } from "@/trpc/react";
 export const TotalBalance = () => {
   //todo:  get budget from user
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const { data } = api.post.userData.useQuery();
-  const monthlyBalance = api.post.getMontlyBalance.useQuery();
-  const totalBalance = api.post.getTotalBalance.useQuery().data!;
-  const monthlySpent = monthlyBalance.data?.monthlySpent;
+  const { data } = api.user.userData.useQuery();
+  const monthlyBalance = api.transaction.getMontlyBalance.useQuery();
+  const totalBalance = api.transaction.getTotalBalance.useQuery().data!;
+  const monthlySpent = monthlyBalance.data?.monthlySpent!;
 
   if (!data) {
     return <div className="text-center text-gray-500">Loading...</div>;
@@ -69,9 +69,9 @@ export const TotalBalance = () => {
               ></div>
             </div>
             <div className="flex justify-between text-sm text-blue-100">
-              <span>${monthlySpent!.toLocaleString()} spent</span>
+              <span>${monthlySpent} spent</span>
               <span>
-                ${(userData.monthlyBudget - monthlySpent!).toLocaleString()}{" "}
+                ${userData.monthlyBudget - monthlySpent}
                 remaining
               </span>
             </div>

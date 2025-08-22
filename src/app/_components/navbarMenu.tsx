@@ -136,22 +136,20 @@ export const NavbarMenu = ({ session }: { session: Session | null }) => {
                       </MenubarItem>
                     </Link>
                     <Link
-                      href="/AddItem"
+                      href="/AddItem?type=expense"
                       className="font-bold text-gray-800 hover:text-black"
                     >
                       <MenubarItem>
                         <Plus className="mr-2 h-5 w-5" />
-                        {/* todo: AddExpense route */}
                         Add Expense
                       </MenubarItem>
                     </Link>
                     <Link
-                      href="/AddItem"
+                      href="/AddItem?type=income"
                       className="font-bold text-gray-800 hover:text-black"
                     >
                       <MenubarItem>
                         <TrendingUp className="mr-2 h-5 w-5" />
-                        {/* todo: AddIncome route */}
                         Add Income
                       </MenubarItem>
                     </Link>

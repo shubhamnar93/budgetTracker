@@ -1,22 +1,8 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import z from "zod";
+import { TransactionType } from "@prisma/client";
 
-export const postRouter = createTRPCRouter({
-  userData: protectedProcedure.query(async ({ ctx }) => {
-    // todo - replace with actual user data fetching logic
-    const userData = await ctx.db.user.findUnique({
-      where: { id: ctx.session.user.id },
-    });
-    const currentYear = new Date().getFullYear();
-    const currentMonth = new Date().getMonth();
-    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-    const today = new Date().getDate();
-    const daysLeft = daysInMonth - today;
-    return {
-      name: userData?.name || "User",
-      monthlyBudget: userData?.Budget || 0,
-      daysLeftInMonth: daysLeft,
-    };
-  }),
+export const transactionRouter = createTRPCRouter({
   getTransactions: protectedProcedure.query(async ({ ctx }) => {
     const transactions = await ctx.db.transaction.findMany({
       where: { userId: ctx.session.user.id },
@@ -32,6 +18,7 @@ export const postRouter = createTRPCRouter({
     });
     return transactions;
   }),
+
   getTotalBalance: protectedProcedure.query(async ({ ctx }) => {
     const transaction = await ctx.db.transaction.findMany({
       where: { userId: ctx.session.user.id },
@@ -44,6 +31,7 @@ export const postRouter = createTRPCRouter({
     }
     return sum;
   }),
+
   getMontlyBalance: protectedProcedure.query(async ({ ctx }) => {
     const transactions = await ctx.db.transaction.findMany({
       where: { userId: ctx.session.user.id },
@@ -73,4 +61,29 @@ export const postRouter = createTRPCRouter({
       totalNumberOfTransaction,
     };
   }),
+
+  createTransaction: protectedProcedure
+    .input(
+      z.object({
+        amount: z.number(),
+        description: z.string(),
+        date: z.string().optional(),
+        category: z.string(),
+        type: z.enum(["INCOME", "EXPENSE"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id;
+      const transaction = await ctx.db.transaction.create({
+        data: {
+          userId,
+          amount: input.amount,
+          description: input.description,
+          date: input.date ? new Date(input.date) : undefined, // <-- fix here
+          category: input.category,
+          type: input.type,
+        },
+      });
+      return transaction;
+    }),
 });

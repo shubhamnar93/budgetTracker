@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   DollarSign,
   TrendingUp,
@@ -8,8 +8,6 @@ import {
   Calendar,
   FileText,
   Camera,
-  CreditCard,
-  Wallet,
   Check,
   Receipt,
   Building,
@@ -21,15 +19,26 @@ import {
   Heart,
   Coffee,
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import { api } from "@/trpc/react";
 
 const AddItem = () => {
+  const params = useSearchParams();
+  const type = params.get("type");
   const [transactionType, setTransactionType] = useState("expense");
+  useEffect(() => {
+    if (type === "income" || type === "expense") {
+      setTransactionType(type);
+    }
+  }, [type]);
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringFrequency, setRecurringFrequency] = useState("monthly");
+
+  const addTransaction = api.transaction.createTransaction.useMutation({});
 
   const expenseCategories = [
     {
@@ -121,19 +130,17 @@ const AddItem = () => {
     },
   ];
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle form submission here
-    console.log({
-      transactionType,
-      amount,
+    const input = {
+      type: transactionType.toUpperCase() as "INCOME" | "EXPENSE",
+      amount: Number(amount),
       description,
       category,
       date,
-      location,
-      isRecurring,
-      recurringFrequency,
-    });
+    };
+    await addTransaction.mutateAsync(input);
     // Reset form or show success message
     alert(
       `${transactionType === "expense" ? "Expense" : "Income"} of $${amount} added successfully!`,

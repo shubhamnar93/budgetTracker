@@ -7,15 +7,12 @@ import { CTASection } from "./ctaSection";
 export default async function Home() {
   const session = await auth();
 
-  if (session?.user) {
-    void api.post.getLatest.prefetch();
-  }
-
-  return (
-    <HydrateClient>
-      <HeroContent />
-      <FeatureSection />
-      <CTASection />
-    </HydrateClient>
-  );
+  if (session?.user)
+    return (
+      <HydrateClient>
+        <HeroContent />
+        <FeatureSection />
+        <CTASection />
+      </HydrateClient>
+    );
 }
