@@ -15,7 +15,7 @@ export const TotalBalance = () => {
     return <div className="text-center text-gray-500">Loading...</div>;
   }
   const userData = data;
-  const spendingPercentage = (monthlySpent! / userData.monthlyBudget) * 100;
+  const spendingPercentage = (monthlySpent / userData.monthlyBudget) * 100;
   return (
     <div className="mb-8">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">

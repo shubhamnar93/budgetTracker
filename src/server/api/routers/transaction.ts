@@ -50,10 +50,12 @@ export const transactionRouter = createTRPCRouter({
     let monthlyIncome = 0;
     let monthlySpent = 0;
 
-    for (let i = 0; i < totalNumberOfTransaction; i++) {
-      if (transactions[i]?.type == "EXPENSE") {
-        monthlySpent += transactions[i]?.amount!;
-      } else monthlyIncome += transactions[i]?.amount!;
+    for (const t of monthlyTransaction) {
+      if (t?.type === "EXPENSE") {
+        monthlySpent += t?.amount ?? 0;
+      } else {
+        monthlyIncome += t?.amount ?? 0;
+      }
     }
 
     return {
