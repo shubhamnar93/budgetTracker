@@ -121,12 +121,6 @@ const AddItem = () => {
     },
   ];
 
-  const paymentMethods = [
-    { id: "card", name: "Credit Card", icon: CreditCard },
-    { id: "cash", name: "Cash", icon: Wallet },
-    { id: "bank", name: "Bank Transfer", icon: Building },
-  ];
-
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // Handle form submission here

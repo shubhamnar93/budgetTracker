@@ -2,28 +2,29 @@ import { api } from "@/trpc/server";
 import { CreditCard, Target, TrendingUp } from "lucide-react";
 
 export const QuickStats = async () => {
-  // todo - replace with actual user data fetching logic
-  const { userData } = await api.post.hello();
+  // todo - want user to set budget
+  const budget = (await api.post.userData()).monthlyBudget;
+  const transactionData = await api.post.getMontlyBalance();
   const quickStats = [
     {
       label: "This Month's Spending",
-      amount: userData.monthlySpent,
-      budget: userData.monthlyBudget,
-      trend: -5.2,
+      amount: transactionData.monthlySpent,
+      budget: budget,
+      trend: 0,
       icon: CreditCard,
       color: "blue",
     },
     {
       label: "Available to Spend",
-      amount: userData.monthlyBudget - userData.monthlySpent,
+      amount: budget - transactionData.monthlySpent,
       trend: 0,
       icon: Target,
       color: "green",
     },
     {
       label: "Monthly Income",
-      amount: userData.monthlyIncome,
-      trend: 12.3,
+      amount: transactionData.monthlyIncome,
+      trend: 0,
       icon: TrendingUp,
       color: "purple",
     },

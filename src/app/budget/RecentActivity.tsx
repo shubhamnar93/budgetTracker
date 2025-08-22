@@ -36,7 +36,10 @@ export const RecentActivity = () => {
     <div className="mt-7 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
         <h3 className="text-lg font-semibold text-gray-800">Recent Activity</h3>
-        <button className="text-sm font-medium text-blue-600 transition-colors hover:text-blue-800">
+        <button
+          className="text-sm font-medium text-blue-600 transition-colors hover:cursor-pointer hover:text-blue-800"
+          onClick={() => (window.location.href = "/AllTransactions")}
+        >
           View All
         </button>
       </div>

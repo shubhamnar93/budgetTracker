@@ -4,15 +4,18 @@ import { Eye, EyeOff } from "lucide-react";
 import { api } from "@/trpc/react";
 
 export const TotalBalance = () => {
+  //todo:  get budget from user
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const { data } = api.post.hello.useQuery();
+  const { data } = api.post.userData.useQuery();
+  const monthlyBalance = api.post.getMontlyBalance.useQuery();
+  const totalBalance = api.post.getTotalBalance.useQuery().data!;
+  const monthlySpent = monthlyBalance.data?.monthlySpent;
 
   if (!data) {
     return <div className="text-center text-gray-500">Loading...</div>;
   }
-  const { userData } = data;
-  const spendingPercentage =
-    (userData.monthlySpent / userData.monthlyBudget) * 100;
+  const userData = data;
+  const spendingPercentage = (monthlySpent! / userData.monthlyBudget) * 100;
   return (
     <div className="mb-8">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
@@ -27,9 +30,7 @@ export const TotalBalance = () => {
               </p>
               <div className="flex items-center space-x-3">
                 {balanceVisible ? (
-                  <h2 className="text-4xl font-bold">
-                    ${userData.totalBalance.toLocaleString()}
-                  </h2>
+                  <h2 className="text-4xl font-bold">${totalBalance}</h2>
                 ) : (
                   <h2 className="text-4xl font-bold">••••••</h2>
                 )}
@@ -68,12 +69,9 @@ export const TotalBalance = () => {
               ></div>
             </div>
             <div className="flex justify-between text-sm text-blue-100">
-              <span>${userData.monthlySpent.toLocaleString()} spent</span>
+              <span>${monthlySpent!.toLocaleString()} spent</span>
               <span>
-                $
-                {(
-                  userData.monthlyBudget - userData.monthlySpent
-                ).toLocaleString()}{" "}
+                ${(userData.monthlyBudget - monthlySpent!).toLocaleString()}{" "}
                 remaining
               </span>
             </div>
