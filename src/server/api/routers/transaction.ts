@@ -1,6 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import z from "zod";
-import { TransactionType } from "@prisma/client";
 
 export const transactionRouter = createTRPCRouter({
   getTransactions: protectedProcedure.query(async ({ ctx }) => {
@@ -24,10 +23,12 @@ export const transactionRouter = createTRPCRouter({
       where: { userId: ctx.session.user.id },
     });
     let sum = 0;
-    for (let i = 0; i < transaction.length; i++) {
-      if (transaction[i]?.type == "EXPENSE") {
-        sum -= transaction[i]?.amount!;
-      } else sum += transaction[i]?.amount!;
+    for (const t of transaction) {
+      if (t?.type === "EXPENSE") {
+        sum -= t?.amount ?? 0;
+      } else {
+        sum += t?.amount ?? 0;
+      }
     }
     return sum;
   }),

@@ -8,8 +8,8 @@ export const TotalBalance = () => {
   const [balanceVisible, setBalanceVisible] = useState(true);
   const { data } = api.user.userData.useQuery();
   const monthlyBalance = api.transaction.getMontlyBalance.useQuery();
-  const totalBalance = api.transaction.getTotalBalance.useQuery().data!;
-  const monthlySpent = monthlyBalance.data?.monthlySpent!;
+  const totalBalance = api.transaction.getTotalBalance.useQuery().data ?? 0;
+  const monthlySpent = monthlyBalance.data?.monthlySpent ?? 0;
 
   if (!data) {
     return <div className="text-center text-gray-500">Loading...</div>;

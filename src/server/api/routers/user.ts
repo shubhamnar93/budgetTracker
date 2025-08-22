@@ -11,8 +11,8 @@ export const userRouter = createTRPCRouter({
     const today = new Date().getDate();
     const daysLeft = daysInMonth - today;
     return {
-      name: userData?.name || "User",
-      monthlyBudget: userData?.Budget || 0,
+      name: userData?.name ?? "User",
+      monthlyBudget: userData?.Budget ?? 0,
       daysLeftInMonth: daysLeft,
     };
   }),
