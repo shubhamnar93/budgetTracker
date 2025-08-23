@@ -165,6 +165,7 @@ export const AddItemForm = () => {
       setDate(response.date);
       setDescription(response.description);
       setCategory(response.category);
+      setIsProcessing(false);
     }
   };
 
