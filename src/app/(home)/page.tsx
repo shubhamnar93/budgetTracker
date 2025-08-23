@@ -1,20 +1,13 @@
 import { auth } from "@/server/auth";
 import { HydrateClient } from "@/trpc/server";
-import { HeroContent } from "./HeroContent";
-import { FeatureSection } from "./featureSection";
-import { CTASection } from "./ctaSection";
+import { CheckIsLogin } from "./chekIslogin";
 
 export default async function Home() {
   const session = await auth();
 
-  if (session?.user) {
-    window.location.href = "/budget";
-  }
   return (
     <HydrateClient>
-      <HeroContent />
-      <FeatureSection />
-      <CTASection />
+      <CheckIsLogin authenticated={!!session} />
     </HydrateClient>
   );
 }
