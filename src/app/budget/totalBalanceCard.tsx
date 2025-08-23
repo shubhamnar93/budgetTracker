@@ -69,9 +69,9 @@ export const TotalBalance = () => {
               ></div>
             </div>
             <div className="flex justify-between text-sm text-blue-100">
-              <span>${monthlySpent} spent</span>
+              <span>${monthlySpent.toFixed(2)} spent</span>
               <span>
-                ${userData.monthlyBudget - monthlySpent}
+                ${(userData.monthlyBudget - monthlySpent).toFixed(2)}
                 remaining
               </span>
             </div>

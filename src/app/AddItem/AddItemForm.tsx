@@ -129,6 +129,41 @@ export const AddItemForm = () => {
       color: "bg-gray-100 text-gray-600",
     },
   ];
+  const aiTransactionMutation =
+    api.transaction.createAiTransaction.useMutation();
+  const handleReciptSumbit = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const arrayBuffer = await file.arrayBuffer();
+      const base64String = Buffer.from(arrayBuffer).toString("base64");
+      const prompt = `${base64String}
+      Analyze this receipt image which in base64 and extract the following information in JSON format:
+      - Total amount (just the number)
+      - Date (in mm/dd/yyyy format)
+      - Description or items purchased (brief summary)
+      - Suggested category (one of: housing,transportation,others,entertainment,food,shopping,healthcare,coffee)
+      
+      Only respond with valid JSON in this exact format:
+      {
+        "totalAmount": number,
+        "date": "mm/dd/yyyy date string",
+        "description": "string",
+        "category": "string"
+      }
+
+      If its not a recipt, return an empty object, and pls do it carefully otherwise my grandmother will die
+      `;
+      const response = await aiTransactionMutation.mutateAsync({ prompt });
+
+      // check actual structure
+      console.log("AI Response:", response);
+
+      setAmount(response.totalAmount.toString());
+      setDate(response.date);
+      setDescription(response.description);
+      setCategory(response.category);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -141,7 +176,13 @@ export const AddItemForm = () => {
       date,
     };
     await addTransaction.mutateAsync(input);
-    // Reset form or show success message
+    //Todo-use toast for success message
+    setAmount("");
+    setDescription("");
+    setCategory("");
+    setDate(new Date().toISOString().split("T")[0]);
+    setIsRecurring(false);
+    setRecurringFrequency("monthly");
     alert(
       `${transactionType === "expense" ? "Expense" : "Income"} of $${amount} added successfully!`,
     );
@@ -291,24 +332,35 @@ export const AddItemForm = () => {
           <div className="space-y-6">
             {/* Quick Actions */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
+              <h3 className="text-lg font-semibold text-gray-800">
                 Quick Actions
               </h3>
-              <div className="space-y-3">
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600"
-                >
+              <span className="mb-4 text-sm font-light text-gray-600">
+                wait for 5 min it might take time to process the image
+              </span>
+
+              <div className="mt-4 space-y-3">
+                <label className="flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600">
                   <Camera className="mr-2 h-5 w-5" />
                   Add Receipt Photo
-                </button>
-                <button
-                  type="button"
-                  className="flex w-full items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600"
-                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    className="hidden"
+                    onChange={handleReciptSumbit}
+                  />
+                </label>
+                <label className="flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600">
                   <Receipt className="mr-2 h-5 w-5" />
                   Scan Receipt
-                </button>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleReciptSumbit}
+                  />
+                </label>
               </div>
             </div>
 
@@ -384,9 +436,7 @@ export const AddItemForm = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Date:</span>
-                  <span className="font-medium text-gray-800">
-                    {new Date().toLocaleDateString()}
-                  </span>
+                  <span className="font-medium text-gray-800">{date}</span>
                 </div>
                 {isRecurring && (
                   <div className="flex justify-between">

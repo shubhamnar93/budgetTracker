@@ -1,4 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import { GoogleGenAI } from "@google/genai";
 import z from "zod";
 
 export const transactionRouter = createTRPCRouter({
@@ -88,5 +89,25 @@ export const transactionRouter = createTRPCRouter({
         },
       });
       return transaction;
+    }),
+  createAiTransaction: protectedProcedure
+    .input(
+      z.object({
+        prompt: z.string(),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const ai = new GoogleGenAI({
+        apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY!,
+      });
+      const result = await ai.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: input.prompt,
+      });
+      const resposnseText = result.text;
+      const cleanedText =
+        resposnseText?.replace(/```(?:json)?\n?/g, "").trim() || "";
+      const data = JSON.parse(cleanedText);
+      return data;
     }),
 });
