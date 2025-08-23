@@ -37,6 +37,7 @@ export const AddItemForm = () => {
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [isRecurring, setIsRecurring] = useState(false);
   const [recurringFrequency, setRecurringFrequency] = useState("monthly");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const addTransaction = api.transaction.createTransaction.useMutation({});
 
@@ -132,6 +133,7 @@ export const AddItemForm = () => {
   const aiTransactionMutation =
     api.transaction.createAiTransaction.useMutation();
   const handleReciptSumbit = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    //todo:add ratelimiters
     const file = e.target.files?.[0];
     if (file) {
       const arrayBuffer = await file.arrayBuffer();
@@ -153,6 +155,7 @@ export const AddItemForm = () => {
 
       If its not a recipt, return an empty object, and pls do it carefully otherwise my grandmother will die
       `;
+      const processing = setIsProcessing(true);
       const response = await aiTransactionMutation.mutateAsync({ prompt });
 
       // check actual structure
@@ -349,6 +352,7 @@ export const AddItemForm = () => {
                     capture="environment"
                     className="hidden"
                     onChange={handleReciptSumbit}
+                    disabled={isProcessing}
                   />
                 </label>
                 <label className="flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600">
@@ -359,6 +363,7 @@ export const AddItemForm = () => {
                     accept="image/*"
                     className="hidden"
                     onChange={handleReciptSumbit}
+                    disabled={isProcessing}
                   />
                 </label>
               </div>
