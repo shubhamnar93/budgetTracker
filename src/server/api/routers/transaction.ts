@@ -106,8 +106,13 @@ export const transactionRouter = createTRPCRouter({
       });
       const resposnseText = result.text;
       const cleanedText =
-        resposnseText?.replace(/```(?:json)?\n?/g, "").trim() || "";
-      const data = JSON.parse(cleanedText);
+        resposnseText?.replace(/```(?:json)?\n?/g, "").trim() ?? "";
+      const data = JSON.parse(cleanedText) as {
+        totalAmount: number;
+        date: string;
+        description: string;
+        category: string;
+      };
       return data;
     }),
 });
