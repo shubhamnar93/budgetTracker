@@ -11,7 +11,7 @@ export const NavigationHint = () => {
           </button>
         </Link>
         or
-        <Link href="/reports">
+        <Link href="/Reports?period=month&viewType=overview">
           <button className="mx-1 font-medium text-blue-600 hover:text-blue-800">
             Reports
           </button>

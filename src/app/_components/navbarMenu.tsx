@@ -154,7 +154,7 @@ export const NavbarMenu = ({ session }: { session: Session | null }) => {
                       </MenubarItem>
                     </Link>
                     <Link
-                      href="/Reports"
+                      href="/Reports?period=month&viewType=overview"
                       className="font-bold text-gray-800 hover:text-black"
                     >
                       <MenubarItem>

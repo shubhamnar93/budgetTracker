@@ -40,7 +40,9 @@ export const QuickActions = () => {
 
         <button
           className="group flex w-full items-center justify-between rounded-xl bg-gradient-to-r from-purple-50 to-purple-100 p-4 transition-all duration-200 hover:from-purple-100 hover:to-purple-200"
-          onClick={() => (window.location.href = "/reports")}
+          onClick={() =>
+            (window.location.href = "/Reports?period=month&viewType=overview")
+          }
         >
           <div className="flex items-center">
             <div className="mr-3 rounded-lg bg-purple-600 p-2">

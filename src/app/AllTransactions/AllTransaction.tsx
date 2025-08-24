@@ -5,7 +5,6 @@ import { useEffect, useMemo, useState } from "react";
 
 export const AllTransaction = () => {
   const { data, isLoading } = api.transaction.getTransactions.useQuery();
-  console.log(data);
   const [transactions, setTransactions] = useState(data ?? []);
   useEffect(() => {
     if (!isLoading && data) {
