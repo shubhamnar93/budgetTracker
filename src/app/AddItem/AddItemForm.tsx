@@ -35,8 +35,6 @@ export const AddItemForm = () => {
   const [description, setDescription] = useState("");
   const [category, setCategory] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [isRecurring, setIsRecurring] = useState(false);
-  const [recurringFrequency, setRecurringFrequency] = useState("monthly");
   const [isProcessing, setIsProcessing] = useState(false);
 
   const addTransaction = api.transaction.createTransaction.useMutation({});
@@ -155,7 +153,7 @@ export const AddItemForm = () => {
 
       If its not a recipt, return an empty object, and pls do it carefully otherwise my grandmother will die
       `;
-      const processing = setIsProcessing(true);
+      setIsProcessing(true);
       const response = await aiTransactionMutation.mutateAsync({ prompt });
 
       // check actual structure
@@ -185,8 +183,6 @@ export const AddItemForm = () => {
     setDescription("");
     setCategory("");
     setDate(new Date().toISOString().split("T")[0]);
-    setIsRecurring(false);
-    setRecurringFrequency("monthly");
     alert(
       `${transactionType === "expense" ? "Expense" : "Income"} of $${amount} added successfully!`,
     );
@@ -370,44 +366,6 @@ export const AddItemForm = () => {
               </div>
             </div>
 
-            {/* Recurring Options */}
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="mb-4 text-lg font-semibold text-gray-800">
-                Recurring Transaction
-              </h3>
-              <div className="space-y-4">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    checked={isRecurring}
-                    onChange={(e) => setIsRecurring(e.target.checked)}
-                    className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                  />
-                  <span className="ml-2 text-sm text-gray-700">
-                    Make this a recurring transaction
-                  </span>
-                </label>
-
-                {isRecurring && (
-                  <div>
-                    <label className="mb-2 block text-sm font-medium text-gray-700">
-                      Frequency
-                    </label>
-                    <select
-                      value={recurringFrequency}
-                      onChange={(e) => setRecurringFrequency(e.target.value)}
-                      className="w-full rounded-lg border border-gray-300 px-4 py-2 transition-colors focus:border-blue-500 focus:ring-2 focus:ring-blue-500"
-                    >
-                      <option value="weekly">Weekly</option>
-                      <option value="bi-weekly">Bi-weekly</option>
-                      <option value="monthly">Monthly</option>
-                      <option value="yearly">Yearly</option>
-                    </select>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Summary */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="mb-4 text-lg font-semibold text-gray-800">
@@ -444,14 +402,6 @@ export const AddItemForm = () => {
                   <span className="text-gray-600">Date:</span>
                   <span className="font-medium text-gray-800">{date}</span>
                 </div>
-                {isRecurring && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-600">Recurring:</span>
-                    <span className="font-medium text-blue-600 capitalize">
-                      {recurringFrequency}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
             <div>

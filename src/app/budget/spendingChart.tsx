@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/trpc/react";
 import {
   PieChart as RechartsPieChart,
   Pie,
@@ -7,13 +8,16 @@ import {
   ResponsiveContainer,
 } from "recharts";
 export const SpendingChart = () => {
-  //todo - replace with actual data fetching logic
+  const result = api.transaction.getCategories.useQuery().data;
   const categoryData = [
-    { name: "Housing", value: 1450, color: "#3B82F6" },
-    { name: "Food", value: 920, color: "#10B981" },
-    { name: "Transport", value: 380, color: "#8B5CF6" },
-    { name: "Shopping", value: 640, color: "#EF4444" },
-    { name: "Other", value: 230, color: "#F59E0B" },
+    { name: "Housing", value: result?.housing, color: "#3B82F6" },
+    { name: "Food", value: result?.food, color: "#10B981" },
+    { name: "Transport", value: result?.transport, color: "#8B5CF6" },
+    { name: "Shopping", value: result?.shopping, color: "#EF4444" },
+    { name: "Entertaiment", value: result?.entertainment, color: "#ca8a04" },
+    { name: "Healthcare", value: result?.healthcare, color: "#dc2626" },
+    { name: "Coffee", value: result?.coffee, color: "#ea580c" },
+    { name: "Other", value: result?.other, color: "#F59E0B" },
   ];
   return (
     <div className="mt-7 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

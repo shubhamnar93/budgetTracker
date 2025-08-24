@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/trpc/react";
 import { BarChart3 } from "lucide-react";
 import {
   Bar,
@@ -10,15 +11,15 @@ import {
 } from "recharts";
 
 export const WeeklySpending = () => {
-  //todo: replace with real data
+  const weeklyData = api.transaction.getWeeklyBalance.useQuery().data;
   const weeklySpendingData = [
-    { day: "Mon", amount: 45 },
-    { day: "Tue", amount: 120 },
-    { day: "Wed", amount: 80 },
-    { day: "Thu", amount: 200 },
-    { day: "Fri", amount: 150 },
-    { day: "Sat", amount: 90 },
-    { day: "Sun", amount: 60 },
+    { day: "Sun", amount: weeklyData?.days[0]?.spent },
+    { day: "Mon", amount: weeklyData?.days[1]?.spent },
+    { day: "Tue", amount: weeklyData?.days[2]?.spent },
+    { day: "Wed", amount: weeklyData?.days[3]?.spent },
+    { day: "Thu", amount: weeklyData?.days[4]?.spent },
+    { day: "Fri", amount: weeklyData?.days[5]?.spent },
+    { day: "Sat", amount: weeklyData?.days[6]?.spent },
   ];
 
   return (

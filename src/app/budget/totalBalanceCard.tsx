@@ -30,7 +30,9 @@ export const TotalBalance = () => {
               </p>
               <div className="flex items-center space-x-3">
                 {balanceVisible ? (
-                  <h2 className="text-4xl font-bold">${totalBalance}</h2>
+                  <h2 className="text-4xl font-bold">
+                    ${totalBalance.toFixed(2)}
+                  </h2>
                 ) : (
                   <h2 className="text-4xl font-bold">••••••</h2>
                 )}

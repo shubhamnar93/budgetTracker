@@ -1,37 +1,14 @@
 "use client";
+import { api } from "@/trpc/react";
 import { TrendingDown, TrendingUp } from "lucide-react";
 
 export const RecentActivity = () => {
-  // todo: replace with real data and remember to show only 1 day activity
-  const recentActivity = [
-    {
-      id: 1,
-      type: "expense",
-      description: "Whole Foods",
-      amount: 127.45,
-      category: "Groceries",
-      time: "2 hours ago",
-    },
-    {
-      id: 2,
-      type: "income",
-      description: "Freelance Payment",
-      amount: 850.0,
-      category: "Income",
-      time: "1 day ago",
-    },
-    {
-      id: 3,
-      type: "expense",
-      description: "Uber Ride",
-      amount: 18.5,
-      category: "Transportation",
-      time: "1 day ago",
-    },
-  ];
+  const recentActivity = api.transaction.getTrasactions3.useQuery().data;
 
-  const mothlyTransactions = 23; // todo: replace with real data
-  const averageDailySpending = 127; // todo: replace with real data
+  const monthlyData = api.transaction.getMontlyBalance.useQuery().data;
+  const mothlyTransactions = monthlyData?.totalNumberOfTransaction ?? 0;
+  const monthlySpent = monthlyData?.monthlySpent ?? 0;
+  const averageDailySpending = monthlySpent / mothlyTransactions;
   return (
     <div className="mt-7 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="mb-6 flex items-center justify-between">
@@ -45,7 +22,7 @@ export const RecentActivity = () => {
       </div>
 
       <div className="space-y-4">
-        {recentActivity.map((activity) => (
+        {recentActivity?.map((activity) => (
           <div
             key={activity.id}
             className="flex items-center justify-between rounded-xl p-4 transition-colors hover:bg-gray-50"
@@ -53,10 +30,10 @@ export const RecentActivity = () => {
             <div className="flex items-center space-x-4">
               <div
                 className={`rounded-xl p-3 ${
-                  activity.type === "expense" ? "bg-red-100" : "bg-green-100"
+                  activity.type === "EXPENSE" ? "bg-red-100" : "bg-green-100"
                 }`}
               >
-                {activity.type === "expense" ? (
+                {activity.type === "EXPENSE" ? (
                   <TrendingDown className="h-5 w-5 text-red-600" />
                 ) : (
                   <TrendingUp className="h-5 w-5 text-green-600" />
@@ -69,16 +46,23 @@ export const RecentActivity = () => {
                 <div className="flex items-center space-x-2 text-sm text-gray-500">
                   <span>{activity.category}</span>
                   <span>•</span>
-                  <span>{activity.time}</span>
+                  <span>
+                    {`${(
+                      (new Date().getTime() -
+                        new Date(activity.date).getTime()) /
+                      3600000
+                    ).toFixed(0)}
+                    hours`}
+                  </span>
                 </div>
               </div>
             </div>
             <div
               className={`text-lg font-semibold ${
-                activity.type === "expense" ? "text-gray-800" : "text-green-600"
+                activity.type === "EXPENSE" ? "text-gray-800" : "text-green-600"
               }`}
             >
-              {activity.type === "expense" ? "-" : "+"}$
+              {activity.type === "EXPENSE" ? "-" : "+"}$
               {activity.amount.toFixed(2)}
             </div>
           </div>
