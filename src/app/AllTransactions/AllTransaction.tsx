@@ -1,12 +1,17 @@
 "use client";
 import { api } from "@/trpc/react";
 import { Calendar, Filter, Minus, Plus, Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export const AllTransaction = () => {
-  const tran = api.transaction.getTransactions.useQuery().data ?? [];
-
-  const [transactions] = useState(tran);
+  const { data, isLoading } = api.transaction.getTransactions.useQuery();
+  console.log(data);
+  const [transactions, setTransactions] = useState(data ?? []);
+  useEffect(() => {
+    if (!isLoading && data) {
+      setTransactions(data);
+    }
+  }, [data]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -187,84 +192,88 @@ export const AllTransaction = () => {
       </div>
 
       {/* Transactions Table */}
-      <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
-        <div className="border-b border-gray-200 px-6 py-4">
-          <h2 className="text-lg font-semibold text-gray-900">
-            All Transactions ({filteredTransactions.length})
-          </h2>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                  Date
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                  Description
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
-                  Category
-                </th>
-                <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200 bg-white">
-              {filteredTransactions.map((transaction) => (
-                <tr key={transaction.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
-                    <div className="flex items-center">
-                      <Calendar className="mr-2 h-4 w-4 text-gray-400" />
-                      {formatDate(transaction.date.toString())}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {transaction.description}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getCategoryColor(transaction.category as Categories)}`}
-                    >
-                      {transaction.category}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right whitespace-nowrap">
-                    <div className="flex items-center justify-end">
-                      {transaction.type === "INCOME" ? (
-                        <Plus className="mr-1 h-4 w-4 text-green-500" />
-                      ) : (
-                        <Minus className="mr-1 h-4 w-4 text-red-500" />
-                      )}
-                      <span
-                        className={`text-sm font-medium ${transaction.type === "INCOME" ? "text-green-600" : "text-red-600"}`}
-                      >
-                        {formatCurrency(Math.abs(transaction.amount))}
-                      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {filteredTransactions.length === 0 && (
-          <div className="py-12 text-center">
-            <div className="text-gray-500">
-              <Filter className="mx-auto mb-4 h-12 w-12 opacity-50" />
-              <p className="text-lg font-medium">No transactions found</p>
-              <p className="text-sm">
-                Try adjusting your search or filter criteria
-              </p>
-            </div>
+      {isLoading ? (
+        <div>loading...</div>
+      ) : (
+        <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+          <div className="border-b border-gray-200 px-6 py-4">
+            <h2 className="text-lg font-semibold text-gray-900">
+              All Transactions ({filteredTransactions.length})
+            </h2>
           </div>
-        )}
-      </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Date
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Description
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Category
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium tracking-wider text-gray-500 uppercase">
+                    Amount
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-200 bg-white">
+                {filteredTransactions.map((transaction) => (
+                  <tr key={transaction.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 text-sm whitespace-nowrap text-gray-900">
+                      <div className="flex items-center">
+                        <Calendar className="mr-2 h-4 w-4 text-gray-400" />
+                        {formatDate(transaction.date.toString())}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm font-medium text-gray-900">
+                        {transaction.description}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${getCategoryColor(transaction.category as Categories)}`}
+                      >
+                        {transaction.category}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right whitespace-nowrap">
+                      <div className="flex items-center justify-end">
+                        {transaction.type === "INCOME" ? (
+                          <Plus className="mr-1 h-4 w-4 text-green-500" />
+                        ) : (
+                          <Minus className="mr-1 h-4 w-4 text-red-500" />
+                        )}
+                        <span
+                          className={`text-sm font-medium ${transaction.type === "INCOME" ? "text-green-600" : "text-red-600"}`}
+                        >
+                          {formatCurrency(Math.abs(transaction.amount))}
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {filteredTransactions.length === 0 && (
+            <div className="py-12 text-center">
+              <div className="text-gray-500">
+                <Filter className="mx-auto mb-4 h-12 w-12 opacity-50" />
+                <p className="text-lg font-medium">No transactions found</p>
+                <p className="text-sm">
+                  Try adjusting your search or filter criteria
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
