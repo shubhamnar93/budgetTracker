@@ -13,13 +13,13 @@ import {
 export const WeeklySpending = () => {
   const weeklyData = api.transaction.getWeeklyBalance.useQuery().data;
   const weeklySpendingData = [
-    { day: "Sun", amount: weeklyData?.days[0]?.spent },
-    { day: "Mon", amount: weeklyData?.days[1]?.spent },
-    { day: "Tue", amount: weeklyData?.days[2]?.spent },
-    { day: "Wed", amount: weeklyData?.days[3]?.spent },
-    { day: "Thu", amount: weeklyData?.days[4]?.spent },
-    { day: "Fri", amount: weeklyData?.days[5]?.spent },
-    { day: "Sat", amount: weeklyData?.days[6]?.spent },
+    { day: "Mon", amount: weeklyData?.days[0]?.spent },
+    { day: "Tue", amount: weeklyData?.days[1]?.spent },
+    { day: "Wed", amount: weeklyData?.days[2]?.spent },
+    { day: "Thu", amount: weeklyData?.days[3]?.spent },
+    { day: "Fri", amount: weeklyData?.days[4]?.spent },
+    { day: "Sat", amount: weeklyData?.days[5]?.spent },
+    { day: "Sun", amount: weeklyData?.days[6]?.spent },
   ];
 
   return (
