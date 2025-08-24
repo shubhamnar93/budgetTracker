@@ -19,7 +19,7 @@ export const AllTransaction = () => {
 
   // Filter and sort transactions
   const filteredTransactions = useMemo(() => {
-    let filtered = transactions.filter((transaction) => {
+    const filtered = transactions.filter((transaction) => {
       const matchesSearch =
         transaction.description
           .toLowerCase()
