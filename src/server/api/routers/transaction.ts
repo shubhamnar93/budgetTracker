@@ -1,6 +1,5 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { GoogleGenAI } from "@google/genai";
-import { get } from "http";
 import z from "zod";
 
 export const transactionRouter = createTRPCRouter({
@@ -39,10 +38,8 @@ export const transactionRouter = createTRPCRouter({
     const transactions = await ctx.db.transaction.findMany({
       where: { userId: ctx.session.user.id },
     });
-    const currentDay = new Date().getDay();
     const currentMonth = new Date().getMonth();
     const currentYear = new Date().getFullYear();
-    console.log(new Date().setDate);
     const monthlyTransaction = transactions.filter((transaction) => {
       const transactionDate = new Date(transaction.date);
       return (
