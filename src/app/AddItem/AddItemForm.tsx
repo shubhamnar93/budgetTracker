@@ -156,9 +156,6 @@ export const AddItemForm = () => {
       setIsProcessing(true);
       const response = await aiTransactionMutation.mutateAsync({ prompt });
 
-      // check actual structure
-      console.log("AI Response:", response);
-
       setAmount(response.totalAmount.toString());
       setDate(response.date);
       setDescription(response.description);
