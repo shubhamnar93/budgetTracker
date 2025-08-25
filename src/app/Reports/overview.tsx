@@ -2,7 +2,6 @@
 import { api } from "@/trpc/react";
 import { DollarSign, Percent, TrendingDown, TrendingUp } from "lucide-react";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
 import {
   Area,
   AreaChart,
@@ -127,7 +126,7 @@ export const Overview = () => {
               <YAxis axisLine={false} tickLine={false} />
               <Tooltip
                 formatter={(value, name) => [
-                  `${value}`,
+                  String(value),
                   name === "income"
                     ? "Income"
                     : name === "expense"
