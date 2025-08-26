@@ -31,6 +31,8 @@ export const Overview = () => {
     date: transaction.date,
     category: transaction.category,
   }));
+  let savingPercent = 0;
+  if (data) savingPercent = data?.totalSavig / (data?.totalIncome / 100);
   return (
     <div className="space-y-8">
       {/* Key Metrics */}
@@ -89,8 +91,10 @@ export const Overview = () => {
           <h3 className="mb-1 text-sm font-medium text-gray-600">
             Savings Rate
           </h3>
-          <p className="text-2xl font-bold text-gray-800">44.1%</p>
-          <p className="mt-1 text-sm text-green-600">Above target</p>
+          <p className="text-2xl font-bold text-gray-800">
+            {savingPercent.toFixed(2)}%
+          </p>
+          <p className="mt-1 text-sm text-green-600">From Income </p>
         </div>
       </div>
 

@@ -1,10 +1,10 @@
 import { Suspense } from "react";
-import { Overview } from "./overview";
+import { ViewType } from "./viewType";
 
 export const Reports = () => {
   return (
     <Suspense>
-      <Overview />
+      <ViewType />
     </Suspense>
   );
 };

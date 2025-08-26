@@ -3,20 +3,20 @@ import { CreditCard, Target, TrendingUp } from "lucide-react";
 
 export const QuickStats = async () => {
   // todo - want user to set budget
-  const budget = (await api.user.userData()).monthlyBudget;
   const transactionData = await api.transaction.getMontlyBalance();
+  const totalBalance = await api.transaction.getTotalBalance();
   const quickStats = [
     {
       label: "This Month's Spending",
       amount: transactionData.monthlySpent,
-      budget: budget,
+      budget: totalBalance,
       trend: 0,
       icon: CreditCard,
       color: "blue",
     },
     {
       label: "Available to Spend",
-      amount: budget - transactionData.monthlySpent,
+      amount: totalBalance - transactionData.monthlySpent,
       trend: 0,
       icon: Target,
       color: "green",

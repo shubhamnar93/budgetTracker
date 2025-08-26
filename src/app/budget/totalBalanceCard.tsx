@@ -15,7 +15,7 @@ export const TotalBalance = () => {
     return <div className="text-center text-gray-500">Loading...</div>;
   }
   const userData = data;
-  const spendingPercentage = (monthlySpent / userData.monthlyBudget) * 100;
+  const spendingPercentage = (monthlySpent / totalBalance) * 100;
   return (
     <div className="mb-8">
       <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-600 to-purple-600 p-8 text-white">
@@ -73,7 +73,7 @@ export const TotalBalance = () => {
             <div className="flex justify-between text-sm text-blue-100">
               <span>${monthlySpent.toFixed(2)} spent</span>
               <span>
-                ${(userData.monthlyBudget - monthlySpent).toFixed(2)}
+                ${totalBalance.toFixed(2)}
                 remaining
               </span>
             </div>
