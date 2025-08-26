@@ -1,4 +1,5 @@
 "use client";
+import { api } from "@/trpc/react";
 import {
   Activity,
   BarChart3,
@@ -7,9 +8,33 @@ import {
   Eye,
   Filter,
 } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export const Controls = () => {
+  const searchParams = useSearchParams();
+  const periodParam = searchParams.get("period") ?? "week";
+  let data = api.reports.getWeeklyData.useQuery().data;
+
+  if (periodParam === "month") {
+    data = api.reports.getMonthlyData.useQuery().data;
+  } else if (periodParam === "year") {
+    data = api.reports.getYearlyData.useQuery().data;
+  } else if (periodParam == "quarter") {
+    data = api.reports.getQuarterlyData.useQuery().data;
+  }
+  const handleExport = () => {
+    if (!data) return;
+    const blob = new Blob([JSON.stringify(data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `report-${selectedPeriod}.json`;
+    link.click();
+  };
+
   const [selectedPeriod, setSelectedPeriod] = useState("month");
   useEffect(() => {
     const queryString = window.location.search;
@@ -121,7 +146,10 @@ export const Controls = () => {
             </select>
           </div>
 
-          <button className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700">
+          <button
+            onClick={handleExport}
+            className="flex items-center gap-2 rounded-md bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
+          >
             <Download size={16} />
             Export Report
           </button>
