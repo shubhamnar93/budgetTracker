@@ -1,29 +1,80 @@
-# Create T3 App
+# Budget Tracker
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+**Smart, secure, and mobile-first finance tracking**
 
-## What's next? How do I make an app with this?
+---
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Overview
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Budget Tracker is an intuitive web application designed to help you take full control of your spending. With AI-powered categorization, insightful analytics, and mobile-optimized features, it's never been easier to track expenses, manage budgets, and reach your savings goals.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+---
 
-## Learn More
+## Demo
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+[Access the live site](https://budget-tracker-six-theta.vercel.app/) to explore:
+- All your financials at a glance—monthly income, expenses, balance, and goal progress.  
+- A clean, mobile-first experience.  
+- Secure, bank-grade encryption and smart notifications.  
+([budget-tracker-six-theta.vercel.app](https://budget-tracker-six-theta.vercel.app/))
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+---
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Features
 
-## How do I deploy this?
+- **AI-Powered Expense Categorization**: Classify transactions automatically to streamline expense tracking.  
+- **Smart Analytics**: Gain deep insights through dynamic charts and reports.  
+- **Goal Tracking**: Set targets and visualize your progress with milestone indicators.  
+- **Mobile-First**: Seamless use on the go.  
+- **Lightning Fast Input**: Add transactions in seconds using smart categorization and receipt scanning.  
+- **Bank-Level Security**: All data is encrypted and securely stored in the cloud.  
+([budget-tracker-six-theta.vercel.app](https://budget-tracker-six-theta.vercel.app/))
 
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v14 or higher recommended)  
+- Modern web browser (Chrome, Firefox, Safari, or Edge)
+
+### Installation
+
+```bash
+# Clone the repo
+git clone https://github.com/<your-username>/budget-tracker.git
+
+# Navigate into project
+cd budget-tracker
+
+# Install dependencies
+npm install
+```
+###Running the App
+
+```bash
+# Start the development server
+npm run dev
+```
+Visit http://localhost:3000 in your browser to see the app in action.
+
+###Building for Production
+
+```bash
+npm run build
+npm run start
+```
+## Usage
+
+- **Sign Up** to create your account.  
+- **Log In** to access your personalized dashboard.  
+- **Add transactions**, and explore **analytics dashboards**.  
+- Review your **monthly summary**, compare **income versus expenses**, and monitor progress toward your goals.
+
+---
+
+## Why It Matters
+
+Many budgeting tools are either outdated, overly complex, or don’t adapt to your lifestyle.  
+**Budget Tracker** fills that gap—making expense tracking **smart**, **visually engaging**, and **secure**—right at your fingertips.
