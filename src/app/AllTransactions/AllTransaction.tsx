@@ -2,6 +2,7 @@
 import { api } from "@/trpc/react";
 import { Calendar, Filter, Minus, Plus, Search } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { LoadingSpinner } from "../_components/loadingSpinner";
 
 export const AllTransaction = () => {
   const { data, isLoading } = api.transaction.getTransactions.useQuery();
@@ -127,7 +128,10 @@ export const AllTransaction = () => {
 
   return (
     <div className="mx-auto max-w-7xl px-6 py-8">
-      <div className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
+      <div
+        className="mb-6 rounded-lg border border-gray-200 bg-white p-6 shadow-sm"
+        style={{ visibility: isLoading ? "hidden" : "visible" }}
+      >
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-5">
           {/* Search */}
           <div className="relative">
@@ -192,7 +196,9 @@ export const AllTransaction = () => {
 
       {/* Transactions Table */}
       {isLoading ? (
-        <div>loading...</div>
+        <div className="flex items-center justify-center">
+          <LoadingSpinner size={50} />
+        </div>
       ) : (
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
           <div className="border-b border-gray-200 px-6 py-4">
