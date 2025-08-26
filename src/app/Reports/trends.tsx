@@ -56,7 +56,7 @@ export const Trends = () => {
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="day" axisLine={false} tickLine={false} />
               <YAxis axisLine={false} tickLine={false} />
-              <Tooltip formatter={(value) => [`${value}`, "Spent"]} />
+              <Tooltip formatter={(value) => [String(value), "Spent"]} />
               <Bar dataKey="expense" fill="#3B82F6" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
