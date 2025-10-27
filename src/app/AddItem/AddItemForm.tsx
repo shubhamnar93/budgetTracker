@@ -148,7 +148,7 @@ export const AddItemForm = () => {
         }
       } else if (result.status === "error") {
         setError(
-          "Failed to process receipt: " + (result.error || "Unknown error"),
+          "Failed to process receipt: " + (result.error ?? "Unknown error"),
         );
       }
     } catch (err) {
@@ -480,7 +480,7 @@ export const AddItemForm = () => {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Amount:</span>
                   <span className="font-medium text-gray-800">
-                    ${amount || "0.00"}
+                    ${amount ?? "0.00"}
                   </span>
                 </div>
                 <div className="flex justify-between">
