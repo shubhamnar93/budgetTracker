@@ -1,5 +1,8 @@
 "use client";
+import type { AppRouter } from "@/server/api/root";
 import { api } from "@/trpc/react";
+import type { inferRouterOutputs } from "@trpc/server";
+import { use } from "react";
 import {
   PieChart as RechartsPieChart,
   Pie,
@@ -7,8 +10,12 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-export const SpendingChart = () => {
-  const result = api.transaction.getCategories.useQuery().data;
+export const SpendingChart = ({
+  res,
+}: {
+  res: Promise<inferRouterOutputs<AppRouter>["transaction"]["getCategories"]>;
+}) => {
+  const result = use(res);
   const categoryData = [
     { name: "Housing", value: result?.housing, color: "#3B82F6" },
     { name: "Food", value: result?.food, color: "#10B981" },

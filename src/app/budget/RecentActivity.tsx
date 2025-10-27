@@ -1,13 +1,25 @@
 "use client";
-import { api } from "@/trpc/react";
+import type { AppRouter } from "@/server/api/root";
+import type { inferRouterOutputs } from "@trpc/server";
 import { TrendingDown, TrendingUp } from "lucide-react";
+import { use } from "react";
 
-export const RecentActivity = () => {
-  const recentActivity = api.transaction.getTrasactions3.useQuery().data;
+export const RecentActivity = ({
+  recent,
+  monthly,
+}: {
+  recent: Promise<
+    inferRouterOutputs<AppRouter>["transaction"]["getTrasactions3"]
+  >;
+  monthly: Promise<
+    inferRouterOutputs<AppRouter>["transaction"]["getMontlyBalance"]
+  >;
+}) => {
+  const recentActivity = use(recent);
+  const monthlyData = use(monthly);
 
-  const monthlyData = api.transaction.getMontlyBalance.useQuery().data;
-  const mothlyTransactions = monthlyData?.totalNumberOfTransaction ?? 0;
-  const monthlySpent = monthlyData?.monthlySpent ?? 0;
+  const mothlyTransactions = monthlyData.totalNumberOfTransaction;
+  const monthlySpent = monthlyData.monthlySpent;
   const averageDailySpending = monthlySpent / mothlyTransactions;
   return (
     <div className="mt-7 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

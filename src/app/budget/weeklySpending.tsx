@@ -1,6 +1,8 @@
 "use client";
-import { api } from "@/trpc/react";
+import type { AppRouter } from "@/server/api/root";
+import type { inferRouterOutputs } from "@trpc/server";
 import { BarChart3 } from "lucide-react";
+import { use } from "react";
 import {
   Bar,
   BarChart,
@@ -10,8 +12,14 @@ import {
   YAxis,
 } from "recharts";
 
-export const WeeklySpending = () => {
-  const weeklyData = api.transaction.getWeeklyBalance.useQuery().data;
+export const WeeklySpending = ({
+  weekly,
+}: {
+  weekly: Promise<
+    inferRouterOutputs<AppRouter>["transaction"]["getWeeklyBalance"]
+  >;
+}) => {
+  const weeklyData = use(weekly);
   const weeklySpendingData = [
     { day: "Mon", amount: weeklyData?.days[0]?.spent },
     { day: "Tue", amount: weeklyData?.days[1]?.spent },

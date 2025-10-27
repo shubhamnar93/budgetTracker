@@ -1,19 +1,32 @@
 "use client";
-import { api } from "@/trpc/react";
-import { ArrowDownRight, ArrowUpRight } from "lucide-react";
+import type { AppRouter } from "@/server/api/root";
+import type { inferRouterOutputs } from "@trpc/server";
 import { useSearchParams } from "next/navigation";
+import { use } from "react";
 import { Cell, Pie, ResponsiveContainer, Tooltip, PieChart } from "recharts";
 
-export const Categories = () => {
+export const Categories = ({
+  weekly,
+  monthly,
+  year,
+  quarter,
+}: {
+  weekly: Promise<inferRouterOutputs<AppRouter>["reports"]["getWeeklyData"]>;
+  monthly: Promise<inferRouterOutputs<AppRouter>["reports"]["getMonthlyData"]>;
+  year: Promise<inferRouterOutputs<AppRouter>["reports"]["getYearlyData"]>;
+  quarter: Promise<
+    inferRouterOutputs<AppRouter>["reports"]["getQuarterlyData"]
+  >;
+}) => {
   const searchParams = useSearchParams();
   const periodParam = searchParams.get("period") ?? "week";
-  let data = api.reports.getWeeklyData.useQuery().data;
+  let data = use(weekly);
   if (periodParam === "month") {
-    data = api.reports.getMonthlyData.useQuery().data;
+    data = use(monthly);
   } else if (periodParam === "year") {
-    data = api.reports.getYearlyData.useQuery().data;
+    data = use(year);
   } else if (periodParam == "quarter") {
-    data = api.reports.getQuarterlyData.useQuery().data;
+    data = use(quarter);
   }
   type CategorySpending = {
     name: string;

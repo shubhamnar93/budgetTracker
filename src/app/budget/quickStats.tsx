@@ -16,7 +16,7 @@ export const QuickStats = async () => {
     },
     {
       label: "Available to Spend",
-      amount: totalBalance - transactionData.monthlySpent,
+      amount: totalBalance,
       trend: 0,
       icon: Target,
       color: "green",

@@ -1,15 +1,28 @@
 "use client";
-import { useState } from "react";
+import { use, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import { api } from "@/trpc/react";
+import type { AppRouter } from "@/server/api/root";
+import type { inferRouterOutputs } from "@trpc/server";
 
-export const TotalBalance = () => {
+export const TotalBalance = ({
+  monthly,
+  total,
+  user,
+}: {
+  monthly: Promise<
+    inferRouterOutputs<AppRouter>["transaction"]["getMontlyBalance"]
+  >;
+  total: Promise<
+    inferRouterOutputs<AppRouter>["transaction"]["getTotalBalance"]
+  >;
+  user: Promise<inferRouterOutputs<AppRouter>["user"]["userData"]>;
+}) => {
   //todo:  get budget from user
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const { data } = api.user.userData.useQuery();
-  const monthlyBalance = api.transaction.getMontlyBalance.useQuery();
-  const totalBalance = api.transaction.getTotalBalance.useQuery().data ?? 0;
-  const monthlySpent = monthlyBalance.data?.monthlySpent ?? 0;
+  const data = use(user);
+  const monthlyBalance = use(monthly);
+  const totalBalance = use(total);
+  const monthlySpent = monthlyBalance.monthlySpent ?? 0;
 
   if (!data) {
     return <div className="text-center text-gray-500">Loading...</div>;

@@ -7,9 +7,7 @@ import {
   Plus,
   Calendar,
   FileText,
-  Camera,
   Check,
-  Receipt,
   Building,
   Car,
   ShoppingBag,
@@ -21,8 +19,156 @@ import {
 } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { api } from "@/trpc/react";
+import { AiButton } from "./AiButton";
+
+interface ReceiptData {
+  totalAmount: number;
+  date: string;
+  description: string;
+  category: string;
+  documentType: string;
+  expenseType: string;
+}
 
 export const AddItemForm = () => {
+  const trpcUtils = api.useUtils();
+  const [amount, setAmount] = useState("");
+  const [description, setDescription] = useState("");
+  const [category, setCategory] = useState("");
+  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState("");
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  const parseReceiptResult = (result: any): ReceiptData => {
+    // Adjust this based on TabScanner's actual response format
+    return {
+      totalAmount: result.total || result.amount || 0,
+      date: result.date || new Date().toISOString().split("T")[0],
+      description: result.merchant || result.description || "Receipt",
+      category: "",
+      documentType: result.documentType,
+      expenseType: result.expenseType,
+    };
+  };
+  const processImageMutation = api.tabscanner.processImage.useMutation();
+  const handleReceiptSubmit = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(file.type)) {
+      setError("Please upload a JPEG or PNG image");
+      e.target.value = "";
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+    if (file.size > maxSize) {
+      setError("File size must be less than 10MB");
+      e.target.value = "";
+      return;
+    }
+
+    setIsProcessing(true);
+    setError("");
+
+    try {
+      // Convert file to base64
+      const base64 = await fileToBase64(file);
+
+      // Process image
+      const response = await processImageMutation.mutateAsync({
+        files: [
+          {
+            name: file.name,
+            type: file.type as "image/jpeg" | "image/png",
+            size: file.size,
+            base64,
+          },
+        ],
+        params: {},
+      });
+
+      // Poll for result (TabScanner may take time to process)
+      const result = await pollForResult(response.token);
+
+      if (result.status === "done" && result.result) {
+        // Extract receipt data from result
+        const receiptData = parseReceiptResult(result.result);
+
+        // Automatically populate form fields
+        setAmount(receiptData.totalAmount.toString());
+        setDate(
+          new Date(receiptData.date ?? "2025-10-27 16:27")
+            .toISOString()
+            .split("T")[0],
+        );
+        setDescription(receiptData.description);
+        console.log(receiptData.documentType);
+        if (receiptData.documentType === "receipt")
+          setTransactionType("expense");
+        else setTransactionType("income");
+        if (
+          receiptData.expenseType === "Meals" ||
+          receiptData.expenseType === "Individual Meals while Traveling"
+        ) {
+          setCategory("food");
+        } else if (
+          receiptData.expenseType === "Transportation-Rideshare" ||
+          receiptData.expenseType === "Uber" ||
+          receiptData.expenseType === "Travel Expenses" ||
+          receiptData.expenseType === "Taxi" ||
+          receiptData.expenseType === "Hotel" ||
+          receiptData.expenseType === "Lyft"
+        ) {
+          setCategory("transportation");
+        } else {
+          setCategory("others");
+        }
+      } else if (result.status === "error") {
+        setError(
+          "Failed to process receipt: " + (result.error || "Unknown error"),
+        );
+      }
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Failed to process receipt",
+      );
+    } finally {
+      setIsProcessing(false);
+      e.target.value = ""; // Reset input
+    }
+  };
+
+  const pollForResult = async (
+    token: string,
+    maxAttempts = 30,
+  ): Promise<any> => {
+    for (let i = 0; i < maxAttempts; i++) {
+      const result = await trpcUtils.tabscanner.getResult.fetch({ token });
+
+      if (result.status === "done" || result.status === "error") {
+        return result;
+      }
+
+      // Wait 10 seconds before next attempt
+      await new Promise((resolve) => setTimeout(resolve, 10000));
+    }
+
+    throw new Error("Receipt processing timed out");
+  };
+
   const params = useSearchParams();
   const type = params.get("type");
   const [transactionType, setTransactionType] = useState("expense");
@@ -31,11 +177,6 @@ export const AddItemForm = () => {
       setTransactionType(type);
     }
   }, [type]);
-  const [amount, setAmount] = useState("");
-  const [description, setDescription] = useState("");
-  const [category, setCategory] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [isProcessing, setIsProcessing] = useState(false);
 
   const addTransaction = api.transaction.createTransaction.useMutation({});
 
@@ -128,41 +269,6 @@ export const AddItemForm = () => {
       color: "bg-gray-100 text-gray-600",
     },
   ];
-  const aiTransactionMutation =
-    api.transaction.createAiTransaction.useMutation();
-  const handleReciptSumbit = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    //todo:add ratelimiters
-    const file = e.target.files?.[0];
-    if (file) {
-      const arrayBuffer = await file.arrayBuffer();
-      const base64String = Buffer.from(arrayBuffer).toString("base64");
-      const prompt = `${base64String}
-      Analyze this receipt image which in base64 and extract the following information in JSON format:
-      - Total amount (just the number)
-      - Date (in mm/dd/yyyy format)
-      - Description or items purchased (brief summary)
-      - Suggested category (one of: housing,transportation,others,entertainment,food,shopping,healthcare,coffee)
-      
-      Only respond with valid JSON in this exact format:
-      {
-        "totalAmount": number,
-        "date": "mm/dd/yyyy date string",
-        "description": "string",
-        "category": "string"
-      }
-
-      If its not a recipt, return an empty object, and pls do it carefully otherwise my grandmother will die
-      `;
-      setIsProcessing(true);
-      const response = await aiTransactionMutation.mutateAsync({ prompt });
-
-      setAmount(response.totalAmount.toString());
-      setDate(response.date);
-      setDescription(response.description);
-      setCategory(response.category);
-      setIsProcessing(false);
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -180,6 +286,7 @@ export const AddItemForm = () => {
     setDescription("");
     setCategory("");
     setDate(new Date().toISOString().split("T")[0]);
+
     alert(
       `${transactionType === "expense" ? "Expense" : "Income"} of $${amount} added successfully!`,
     );
@@ -190,6 +297,11 @@ export const AddItemForm = () => {
 
   return (
     <div className="mx-auto flex max-w-4xl flex-col items-center justify-center px-4 py-4">
+      {error && (
+        <div className="mb-4 rounded-lg bg-red-50 p-4 text-red-700">
+          {error}
+        </div>
+      )}
       <form onSubmit={handleSubmit} className="space-y-8">
         {/* Transaction Type Toggle */}
         <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
@@ -328,41 +440,10 @@ export const AddItemForm = () => {
           {/* Sidebar */}
           <div className="space-y-6">
             {/* Quick Actions */}
-            <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Quick Actions
-              </h3>
-              <span className="mb-4 text-sm font-light text-gray-600">
-                wait for 5 min it might take time to process the image
-              </span>
-
-              <div className="mt-4 space-y-3">
-                <label className="flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600">
-                  <Camera className="mr-2 h-5 w-5" />
-                  Add Receipt Photo
-                  <input
-                    type="file"
-                    accept="image/*"
-                    capture="environment"
-                    className="hidden"
-                    onChange={handleReciptSumbit}
-                    disabled={isProcessing}
-                  />
-                </label>
-                <label className="flex w-full cursor-pointer items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-3 text-gray-500 transition-colors hover:border-gray-400 hover:text-gray-600">
-                  <Receipt className="mr-2 h-5 w-5" />
-                  Scan Receipt
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleReciptSumbit}
-                    disabled={isProcessing}
-                  />
-                </label>
-              </div>
-            </div>
-
+            <AiButton
+              onReceiptProcessed={handleReceiptSubmit}
+              isProcessing={isProcessing}
+            />
             {/* Summary */}
             <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
               <h3 className="mb-4 text-lg font-semibold text-gray-800">
