@@ -43,19 +43,29 @@ export const AddItemForm = () => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
+      reader.onerror = () => reject(new Error("Failed to read file"));
     });
   };
 
-  const parseReceiptResult = (result: any): ReceiptData => {
+  type RawReceipt = {
+    total?: number;
+    amount?: number;
+    date?: string;
+    merchant?: string;
+    description?: string;
+    documentType?: string;
+    expenseType?: string;
+  };
+
+  const parseReceiptResult = (result: RawReceipt): ReceiptData => {
     // Adjust this based on TabScanner's actual response format
     return {
-      totalAmount: result.total || result.amount || 0,
-      date: result.date || new Date().toISOString().split("T")[0],
-      description: result.merchant || result.description || "Receipt",
+      totalAmount: result.total ?? result.amount ?? 0,
+      date: result.date ?? "",
+      description: result.merchant ?? result.description ?? "Receipt",
       category: "",
-      documentType: result.documentType,
-      expenseType: result.expenseType,
+      documentType: result.documentType ?? "",
+      expenseType: result.expenseType ?? "",
     };
   };
   const processImageMutation = api.tabscanner.processImage.useMutation();
@@ -105,7 +115,7 @@ export const AddItemForm = () => {
 
       if (result.status === "done" && result.result) {
         // Extract receipt data from result
-        const receiptData = parseReceiptResult(result.result);
+        const receiptData = parseReceiptResult(result.result as RawReceipt);
 
         // Automatically populate form fields
         setAmount(receiptData.totalAmount.toString());
@@ -151,19 +161,24 @@ export const AddItemForm = () => {
     }
   };
 
+  type PollResultDone = { status: "done"; result?: RawReceipt | null };
+  type PollResultError = { status: "error"; error?: string | null };
+  type PollResultPending = { status: "pending" };
+  type PollResult = PollResultDone | PollResultError | PollResultPending;
+
   const pollForResult = async (
     token: string,
     maxAttempts = 30,
-  ): Promise<any> => {
+  ): Promise<PollResult> => {
     for (let i = 0; i < maxAttempts; i++) {
       const result = await trpcUtils.tabscanner.getResult.fetch({ token });
 
       if (result.status === "done" || result.status === "error") {
-        return result;
+        return result as PollResult;
       }
 
       // Wait 10 seconds before next attempt
-      await new Promise((resolve) => setTimeout(resolve, 10000));
+      await new Promise<void>((resolve) => setTimeout(resolve, 10000));
     }
 
     throw new Error("Receipt processing timed out");
