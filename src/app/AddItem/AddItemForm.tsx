@@ -120,7 +120,7 @@ export const AddItemForm = () => {
         // Automatically populate form fields
         setAmount(receiptData.totalAmount.toString());
         setDate(
-          new Date(receiptData.date || "2025-10-27 16:27")
+          new Date(receiptData.date ?? "2025-10-27 16:27")
             .toISOString()
             .split("T")[0],
         );
