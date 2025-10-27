@@ -12,7 +12,7 @@ interface TabScannerResponse {
 interface TabScannerResult {
   token: string;
   status: "processing" | "done" | "error";
-  result?: any;
+  result?: unknown;
   error?: string;
 }
 
@@ -50,7 +50,7 @@ export const tabscannerRouter = createTRPCRouter({
       // Add files to form data
       for (const file of files) {
         // Convert base64 to buffer
-        const base64Data = file.base64.split(",")[1] || file.base64;
+        const base64Data = file.base64.split(",")[1] ?? file.base64;
         const buffer = Buffer.from(base64Data, "base64");
 
         formData.append("file", buffer, {

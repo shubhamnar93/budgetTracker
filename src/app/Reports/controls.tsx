@@ -46,7 +46,7 @@ export const Controls = ({
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString).get("period");
     setSelectedPeriod(urlParams ?? "month");
-  });
+  }, []);
   const [viewType, setViewType] = useState("overview");
   useEffect(() => {
     const queryString = window.location.search;

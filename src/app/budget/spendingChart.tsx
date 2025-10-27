@@ -1,6 +1,5 @@
 "use client";
 import type { AppRouter } from "@/server/api/root";
-import { api } from "@/trpc/react";
 import type { inferRouterOutputs } from "@trpc/server";
 import { use } from "react";
 import {

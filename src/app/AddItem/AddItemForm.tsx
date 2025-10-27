@@ -115,12 +115,12 @@ export const AddItemForm = () => {
 
       if (result.status === "done" && result.result) {
         // Extract receipt data from result
-        const receiptData = parseReceiptResult(result.result as RawReceipt);
+        const receiptData = parseReceiptResult(result.result);
 
         // Automatically populate form fields
         setAmount(receiptData.totalAmount.toString());
         setDate(
-          new Date(receiptData.date ?? "2025-10-27 16:27")
+          new Date(receiptData.date || "2025-10-27 16:27")
             .toISOString()
             .split("T")[0],
         );
