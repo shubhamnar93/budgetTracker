@@ -197,7 +197,7 @@ export const AllTransaction = () => {
       {/* Transactions Table */}
       {isLoading ? (
         <div className="flex items-center justify-center">
-          <LoadingSpinner size={50} />
+          <LoadingSpinner size={50} what={"transaction table"}/>
         </div>
       ) : (
         <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
