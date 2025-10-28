@@ -1,4 +1,7 @@
+import z from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
+import fs from "fs";
+import path from "path";
 
 export const reportRouter = createTRPCRouter({
   getWeeklyData: protectedProcedure.query(async ({ ctx }) => {
@@ -500,4 +503,101 @@ export const reportRouter = createTRPCRouter({
     });
     return transactions;
   }),
+  getReport: protectedProcedure
+    .input(
+      z.object({
+        data: z.object({
+          categoryExpense: z.object({
+            housing: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            food: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            transportation: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            shopping: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            entertainment: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            healthcare: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            others: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            coffee: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+          }),
+          dateData: z.array(
+            z.object({
+              day: z.string(),
+              income: z.number(),
+              expense: z.number(),
+              saving: z.number(),
+            }),
+          ),
+          categoryIncome: z.object({
+            salary: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            freelance: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            investments: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            bonus: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            gifts: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+            other: z.object({
+              id: z.string(),
+              total: z.number(),
+            }),
+          }),
+          totalIncome: z.number(),
+          totalExpense: z.number(),
+          totalSavig: z.number(),
+        }),
+      }),
+    )
+    .query(({ input }) => {
+      const fileName = "output.json";
+      const filePath = path.join(process.cwd(), fileName);
+      fs.writeFileSync(filePath, JSON.stringify(input.data, null, 2));
+
+      // 2️⃣ Check if file exists
+      if (!fs.existsSync(filePath)) {
+        throw new Error("File not found");
+      }
+      const fileBuffer = fs.readFileSync(filePath);
+      const contentType = "application/json";
+
+      // 5️⃣ Return as base64 + metadata
+      return {
+        fileName: fileName,
+        contentType,
+        fileData: fileBuffer.toString("base64"), // convert binary → base64
+      };
+    }),
 });

@@ -1,5 +1,6 @@
 "use client";
 import type { AppRouter } from "@/server/api/root";
+import { api } from "@/trpc/react";
 import type { inferRouterOutputs } from "@trpc/server";
 import { Activity, BarChart3, Calendar, Download, Eye } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -29,16 +30,43 @@ export const Controls = ({
   } else if (periodParam == "quarter") {
     data = use(quarter);
   }
-  const handleExport = () => {
-    if (!data) return;
-    const blob = new Blob([JSON.stringify(data, null, 2)], {
-      type: "application/json",
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `report-${selectedPeriod}.json`;
-    link.click();
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const { refetch, data: response } = api.reports.getReport.useQuery({ data });
+  const handleExport = async () => {
+    console.log("inside");
+    try {
+      setLoading(true);
+      await refetch();
+      if (!response) {
+        setError("didnt recive response");
+        console.log(error);
+        return;
+      }
+      const byteCharacters = atob(response.fileData);
+      const byteNumbers = new Array(byteCharacters.length)
+        .fill(0)
+        .map((_, i) => byteCharacters.charCodeAt(i));
+      const byteArray = new Uint8Array(byteNumbers);
+
+      const blob = new Blob([byteArray], { type: response.contentType });
+
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = response.fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setLoading(false);
+    } catch (err) {
+      console.error(err);
+      setError("error processing export");
+      console.log(error);
+      setLoading(false);
+    }
   };
 
   const [selectedPeriod, setSelectedPeriod] = useState("month");
@@ -100,7 +128,10 @@ export const Controls = ({
         </div>
 
         {/* Export Button */}
-        <button className="hidden items-center rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-sm transition-colors hover:bg-gray-50 md:flex">
+        <button
+          onClick={handleExport}
+          className="hidden items-center rounded-lg border border-gray-200 bg-white px-4 py-2 shadow-sm transition-colors hover:bg-gray-50 md:flex"
+        >
           <Download className="mr-2 h-4 w-4 text-gray-600" />
           <span className="text-gray-700">Export Report</span>
         </button>
