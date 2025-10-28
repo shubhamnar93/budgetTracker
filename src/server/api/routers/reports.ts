@@ -583,15 +583,11 @@ export const reportRouter = createTRPCRouter({
     )
     .query(({ input }) => {
       const fileName = "output.json";
-      const filePath = path.join(process.cwd(), fileName);
-      fs.writeFileSync(filePath, JSON.stringify(input.data, null, 2));
-
-      // 2️⃣ Check if file exists
-      if (!fs.existsSync(filePath)) {
-        throw new Error("File not found");
-      }
-      const fileBuffer = fs.readFileSync(filePath);
       const contentType = "application/json";
+
+      // ✅ Just create the file content in memory
+      const jsonString = JSON.stringify(input.data, null, 2);
+      const fileBuffer = Buffer.from(jsonString, "utf8");
 
       // 5️⃣ Return as base64 + metadata
       return {
