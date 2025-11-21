@@ -1,6 +1,5 @@
 "use client";
 import type { AppRouter } from "@/server/api/root";
-import { api } from "@/trpc/react";
 import type { inferRouterOutputs } from "@trpc/server";
 import { DollarSign, Percent, TrendingDown, TrendingUp } from "lucide-react";
 import { useSearchParams } from "next/navigation";
@@ -20,6 +19,7 @@ export const Overview = ({
   monthly,
   year,
   quarter,
+  toptransaction
 }: {
   weekly: Promise<inferRouterOutputs<AppRouter>["reports"]["getWeeklyData"]>;
   monthly: Promise<inferRouterOutputs<AppRouter>["reports"]["getMonthlyData"]>;
@@ -27,6 +27,7 @@ export const Overview = ({
   quarter: Promise<
     inferRouterOutputs<AppRouter>["reports"]["getQuarterlyData"]
   >;
+  toptransaction: Promise<inferRouterOutputs<AppRouter>["reports"]["getTopExepense"]>;
 }) => {
   const searchParams = useSearchParams();
   const periodParam = searchParams.get("period") ?? "week";
@@ -39,7 +40,7 @@ export const Overview = ({
     data = use(quarter);
   }
   const daily = data?.dateData;
-  const transactions = api.reports.getTopExepense.useQuery().data;
+  const transactions = use(toptransaction)
   const topExpenses = transactions?.map((transaction) => ({
     description: transaction.description,
     amount: transaction.amount,

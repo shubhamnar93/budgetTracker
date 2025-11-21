@@ -11,6 +11,7 @@ export const ViewType = ({
   monthly,
   year,
   quarter,
+  toptransaction
 }: {
   weekly: Promise<inferRouterOutputs<AppRouter>["reports"]["getWeeklyData"]>;
   monthly: Promise<inferRouterOutputs<AppRouter>["reports"]["getMonthlyData"]>;
@@ -18,6 +19,7 @@ export const ViewType = ({
   quarter: Promise<
     inferRouterOutputs<AppRouter>["reports"]["getQuarterlyData"]
   >;
+  toptransaction: Promise<inferRouterOutputs<AppRouter>["reports"]["getTopExepense"]>;
 }) => {
   const searchParams = useSearchParams();
   const periodParam = searchParams.get("viewType") ?? "overview";
@@ -29,6 +31,7 @@ export const ViewType = ({
           monthly={monthly}
           quarter={quarter}
           year={year}
+          toptransaction={toptransaction}
         />
       ) : periodParam === "categories" ? (
         <Categories

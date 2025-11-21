@@ -9,6 +9,7 @@ export const Reports = () => {
   const year = api.reports.getYearlyData();
   const monthly = api.reports.getMonthlyData();
   const quarter = api.reports.getQuarterlyData();
+  const toptransaction = api.reports.getTopExepense()
   return (
     <Suspense
       fallback={
@@ -28,6 +29,7 @@ export const Reports = () => {
         year={year}
         monthly={monthly}
         quarter={quarter}
+        toptransaction={toptransaction}
       />
     </Suspense>
   );

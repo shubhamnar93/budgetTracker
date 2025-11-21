@@ -139,36 +139,8 @@ export const Categories = ({
                       <span className="font-semibold text-gray-800">
                         ${category.amount}
                       </span>
-                      {/* <div
-                        className={`flex items-center text-sm ${
-                          category.trend > 0 ? "text-red-600" : "text-green-600"
-                        }`}
-                      >
-                        {category.trend > 0 ? (
-                          <ArrowUpRight className="h-4 w-4" />
-                        ) : (
-                          <ArrowDownRight className="h-4 w-4" />
-                        )}
-                        {Math.abs(category.trend)}%
-                      </div> */}
                     </div>
                   </div>
-                  {/* <div className="h-2 w-full rounded-full bg-gray-200">
-                    <div
-                      className="h-2 rounded-full transition-all duration-300"
-                      style={{
-                        width: `${category.percentage}%`,
-                        backgroundColor: category.color,
-                      }}
-                    ></div>
-                  </div>
-                  <div className="mt-2 flex justify-between text-sm text-gray-500">
-                    <span>{category.percentage}% of total</span>
-                    <span>
-                      {category.trend > 0 ? "Increased" : "Decreased"} from last
-                      month
-                    </span>
-                  </div> */}
                 </div>
               ))}
             </div>
